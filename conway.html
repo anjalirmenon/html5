@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css"></style>
+</head>
+</html>
+<html>
+<h1><i>Conway's Game of Life -An Implementation using HTML5 canvas and JS</h1>
+<canvas id="lifeCanvas" width="500" height="500" style="border:8px dotted black;"></canvas>
+<script type="text/javascript">
+var canvas=document.getElementById("lifeCanvas");
+var context = canvas.getContext("2d");
+var pos_x=new Array();
+var pos_y=[];
+var i=0,j=0,x=0,adjcount=0;
+var cell=new Array();
+
+for(i=-1;i<51;++i)
+{
+	cell[i]=new Array();
+	for(j=-1;j<51;++j)
+	{
+		cell[i][j]=0;
+	}
+}
+function create_block() //create row colum for life. 
+{
+	var i=0;
+	var j=0;
+	context.save();
+	context.lineWidth = 0.5;
+
+	for(i = 0; i <= canvas.height; i = i + 10)
+	{
+
+		context.beginPath();
+		context.moveTo(0, i);
+		context.lineTo(canvas.width, i);
+		context.closePath();
+
+          }
+
+ 	  for(j = 0; j <= canvas.width; j = j + 10)
+	  {
+
+		context.beginPath();
+              	context.moveTo(j, 0);
+		context.lineTo(j, canvas.height);
+      		context.closePath();
+
+           }
+
+	}
+
+function generate_random() //create random lives on the canvas
+{
+	for(var i=0;i<1000;++i)
+	{
+		pos_x=Math.floor((Math.random()*50)+0); 
+		pos_y=Math.floor((Math.random()*50)+0);	
+		cell[pos_x][pos_y]=1;
+		fill_life(pos_x,pos_y,0);
+	}
+
+	
+
+}
+
+function conwaylife() //check the conditions around the cell
+{
+	for(i=0;i<50;i++)
+	{
+		one_neighbor(i);
+	}
+	for(i=0;i<50;i++)
+	{
+		two_neighbor(i);
+	}
+
+}
+
+function one_neighbor(i)// check if cell has one neighbor
+{
+
+	for(j=0;j<50;j++)
+	{
+
+		if(cell[i][j]==1)
+		{
+			dead_cell(i,j);
+		}
+	}
+
+}
+
+function two_neighbor(i)// check if cell has two neighbor
+{	
+	for(j=0;j<50;j++){
+
+		if(cell[i][j]==0)
+		{
+
+			live_cell(i,j);
+
+		}
+
+		if(cell[i][j]==1)
+		{
+			dead_cell(i,j);
+		}
+	}
+}
+
+function dead_cell(i,j)// add cell to dead cell list
+{
+
+	adjcount=neighbor_cells(i,j);
+
+	if(adjcount<2 || adjcount>3)
+	{
+		cell[i][j]=0;
+		fill_life(i,j,1);
+	}
+
+}
+
+function live_cell(i,j) // add cell to living cell list
+{
+
+	adjcount=neighbor_cells(i,j);
+
+	if(adjcount>2 || adjcount ==3){
+
+		cell[i][j]=1;
+
+		fill_life(i,j,0);
+
+	}
+
+}
+
+function neighbor_cells(i,j)// find count of cells in the neighborhood
+{
+
+		var count=0;
+
+		if(cell[i][j+1]==1){
+
+			count=count+1;
+
+		}
+
+		if(cell[i+1][j]==1){
+
+			count=count+1;
+
+		}
+
+		if(cell[i+1][j+1]==1){
+
+			count=count+1;
+
+		}
+
+		if(cell[i+1][j-1]==1){
+
+			count=count+1;
+
+		}
+
+		if(cell[i-1][j]==1){
+
+			count=count+1;
+
+		}
+
+		if(cell[i-1][j-1]==1){
+
+			count=count+1;
+
+		}
+
+		if(cell[i][j-1]==1){
+
+			count=count+1;
+
+		}	
+
+		if(cell[i-1][j+1]==1){	
+
+			count=count+1;
+
+		}	
+
+		return count;
+
+			
+
+}
+
+function fill_life(i,j,x) // fill cell with color to indicate life or dead
+{	
+
+	if(x==0){
+
+		context.fillStyle = 'black';
+
+		context.fillRect(i*10,j*10, 9,9);
+
+	}
+
+	else if(x==1){
+
+		context.fillStyle = 'white';
+
+		context.fillRect(i*10,j*10, 9,9);
+
+	}	
+
+	
+
+}
+
+function start_game()
+{
+	      setInterval(conwaylife,200);
+}
+
+create_block();   
+
+</script>
+
+<input type=button onclick="generate_random()"  value="Generate">
+
+<input type=button onclick="start_game()"  value="Start">
+
+<input type=button onclick="history.go()"  value="Clear">
+<h3>Instruction:</h3>
+<p>Click on "Generate" to generate random lives.</p>
+<p>Click on "Start" to start Conway's Game of Life.</p> 
+</head>
+</html>
+
